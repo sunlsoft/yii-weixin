@@ -6,4 +6,6 @@
     <br>
 </p>
 
+[![Latest Stable Version](https://poser.pugx.org/sunlsoft/yii-weixin/v/stable)](https://packagist.org/packages/sunlsoft/yii-weixin)
+[![License](https://poser.pugx.org/sunlsoft/yii-weixin/license)](https://packagist.org/packages/sunlsoft/yii-weixin)
 [![Build Status](https://travis-ci.org/sunlsoft/yii-weixin.svg?branch=master)](https://travis-ci.org/sunlsoft/yii-weixin)
