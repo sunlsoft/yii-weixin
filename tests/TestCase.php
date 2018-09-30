@@ -1,12 +1,12 @@
 <?php
 namespace  sunlsoftunit\extensions\weixin;
 
-
 use yii\di\Container;
 use yii\helpers\ArrayHelper;
 use Yii;
 
-abstract class TestCase extends \PHPUnit\Framework\TestCase{
+abstract class TestCase extends \PHPUnit\Framework\TestCase
+{
 	/**
 	 * Clean up after test.
 	 * By default the application created with [[mockApplication]] will be destroyed.
