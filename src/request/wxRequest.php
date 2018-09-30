@@ -274,7 +274,7 @@ class wxRequest extends Component{
 			$encrypt = isset($wxArr['Encrypt']) ? $wxArr['Encrypt'] : '';
 			$TimeStamp = isset($wxArr['TimeStamp']) ? $wxArr['TimeStamp'] : '';
 			$nonce = $this->getNoce();
-			[$resBool, $this->message_txt_arr] = $wxEncodingCrypt->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
+			list($resBool, $this->message_txt_arr) = $wxEncodingCrypt->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
 			$this->message_txt_arr = $resBool ?  wxDataFormat::xmltoarray($this->message_txt_arr ) : [];
 			
 		}else {
