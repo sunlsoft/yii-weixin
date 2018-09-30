@@ -13,3 +13,4 @@ require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 Yii::setAlias('@sunlsoftunit/extensions/weixin', __DIR__);
 Yii::setAlias('@sunlsoft/yiiweixin/request', dirname(__DIR__) . '/src');
 
+require_once(__DIR__ . '/compatibility.php');
