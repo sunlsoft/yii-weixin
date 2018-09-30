@@ -28,13 +28,19 @@ class wxDataFormat extends BaseObject{
 	 * @param array $data
 	 * @return string
 	 */
-	public static function arraytoxml($data){
-		$str='<xml>';
-		foreach($data as $k=>$v) {
-			$str.='<'.$k.'>'.$v.'</'.$k.'>';
+	public static function arraytoxml($arr){
+		$xml = "<xml>";
+		foreach ($arr as $key => $val)
+		{
+			if (is_numeric($val)){
+				$xml.="<".$key.">".$val."</".$key.">";
+			}else{
+				$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+			}
 		}
-		$str.='</xml>';
-		return $str;
+		$xml.="</xml>";
+		
+		return $xml; 
 	}
 }
 

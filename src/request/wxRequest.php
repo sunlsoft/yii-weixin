@@ -139,6 +139,13 @@ class wxRequest extends Component{
 	public $EncodingAESKey = '';
 	
 	/**
+	 * 微信返回的随机数
+	 * @var string
+	 */
+	public $nonce = NULL;
+	
+	
+	/**
 	 * 加密模式
 	 * @var unknown
 	 */
@@ -265,8 +272,11 @@ class wxRequest extends Component{
 			$wxArr = wxDataFormat::xmltoarray($this->message_aes_txt);
 			$msgSignature = isset($wxArr['MsgSignature']) ? $wxArr['MsgSignature'] : '';
 			$encrypt = isset($wxArr['Encrypt']) ? $wxArr['Encrypt'] : '';
-			$nonce = \Yii::$app->request->get('nonce');
-			$this->message_txt_arr = $wxEncodingCrypt->decryptMsg($this->appid, $this->Token, $msgSignature, $nonce, $encrypt);
+			$TimeStamp = isset($wxArr['TimeStamp']) ? $wxArr['TimeStamp'] : '';
+			$nonce = $this->getNoce();
+			[$resBool, $this->message_txt_arr] = $wxEncodingCrypt->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
+			$this->message_txt_arr = $resBool ?  wxDataFormat::xmltoarray($this->message_txt_arr ) : [];
+			
 		}else {
 			$this->message_txt_arr = wxDataFormat::xmltoarray($this->message_aes_txt);
 		}
@@ -282,6 +292,17 @@ class wxRequest extends Component{
 	
 	public function setMessageAesTxt($txt){
 		$this->message_aes_txt = $txt;
+	}
+	
+	public function setNonce($nonce){
+		$this->nonce = $nonce;
+	}
+	
+	public function getNoce(){
+		if ($this->nonce === null){
+			$this->nonce = \Yii::$app->request->get('nonce');
+		}
+		return $this->nonce;
 	}
 	
 	/**
@@ -405,7 +426,10 @@ class wxRequest extends Component{
 		$type = $this->message_txt_arr;
 		$type['class'] = $className;
 	
-		$object =  \Yii::createObject($type);
+		$object =  \Yii::createObject($className);
+		foreach ($this->message_txt_arr as $k=>$v){
+			isset($object->$k) ? $object->$k = $v : '';
+		}
 		return $object;
 		
 	}

@@ -1,6 +1,7 @@
 <?php
 namespace sunlsoft\yiiweixin\request;
 
+
 /**
  * @author sun
  * @desc   微信的消息加密处理类
@@ -9,7 +10,6 @@ class wxEncodingCrypt {
 	
 	/**
 	 * 检验消息的真实性，并且获取解密后的明文
-	 * @param string $appid				公众号appid
 	 * @param string $token				公众号令牌
 	 * @param string $encodingAesKey	公众号加密密钥
 	 * @param string $msgSignature		消息回复的验签
@@ -18,41 +18,99 @@ class wxEncodingCrypt {
 	 * @param string $encrypt			解密的密文
 	 * @return array					['结果','信息']		如果正确 第一个访问为true  如果解密失败结果返回false 
 	 */
-	public function decryptMsg($appid,$token , $encodingAesKey = '',$msgSignature, $timestamp = null, $nonce, $encrypt){
-		$encodingAesKey = base64_decode($encodingAesKey . "=");
+	public function decryptMsg($token , $encodingAesKey = '',$msgSignature, $timestamp = null, $nonce, $encrypt){
 		
 		$signature = $this->getSHA1($token, $timestamp, $nonce, $encrypt);
-		if ($signature != $msgSignature) {
-			return [false,'验签不正确'];
+
+		if ($signature != $msgSignature){
+			return [false,'签名不正确'];
 		}
-		//使用BASE64对需要解密的字符串进行解码
-		$ciphertext_dec = base64_decode($encrypt);
-		$module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-		$iv = substr($encodingAesKey, 0, 16);
-		mcrypt_generic_init($module, $encodingAesKey, $iv);
-		//解密
-		$decrypted = mdecrypt_generic($module, $ciphertext_dec);
-		mcrypt_generic_deinit($module);
-		mcrypt_module_close($module);
 		
-		//去除补位字符
-		$result = $this->decode($decrypted);
-		//去除16位随机字符串,网络字节序和AppId
-		if (strlen($result) < 16){
-			return [false,'解密后的appid长度不正确'];
-		}
-		$content = substr($result, 16, strlen($result));
+// 		$ciphertext_dec = base64_decode($encrypt);
+		$key= base64_decode($encodingAesKey . "=");
+		$iv = substr($key, 0, 16);
+		$xml=openssl_decrypt(base64_decode($encrypt), "aes-256-cbc", $key, OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING, $iv);
+
+		
+		$content = substr($xml, 16, strlen($xml));
 		$len_list = unpack("N", substr($content, 0, 4));
 		$xml_len = $len_list[1];
-		$xml_content = substr($content, 4, $xml_len);
-		$from_appid = substr($content, $xml_len + 4);
+		$rxml = substr($content, 4, $xml_len);
+
+		return [true,$rxml];
+
+	}
+	
+
+	/**
+	 * 
+	 * @param string $appid				公众号appid
+	 * @param string $token				公众号token
+	 * @param string $encodingAesKey	公众号加密密钥
+	 * @param string $nonce				随机数
+	 * @param string $text				加密的密文
+	 * @return boolean[]|string[]		['结果','信息']		如果正确 第一个访问为true  如果解密失败结果返回false 
+	 */
+	public function encryptMsg($appid,$token ,$encodingAesKey = '' ,$text){
+		$key= base64_decode($encodingAesKey . "=");
 		
-		if ($from_appid != $appid){
-			return [false,'appid 不正确'];
+		$timeStamp = time();
+		$nonce = $this->getRandomStr();
+		$text = $nonce . pack("N", strlen($text)) . $text . $appid;
+		$iv = substr($encodingAesKey, 0, 16);
+		$text = $this->encode($text);
+		$encrypted = openssl_encrypt($text,'aes-256-cbc',$key,OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING,$iv);
+		$encrypted = base64_encode($encrypted);
+		$signature = $this->getSHA1($token, $timeStamp, $nonce, $encrypted);
+		$arr = [
+				'MsgSignature'=>$signature,
+				'TimeStamp'=>$timeStamp,
+				'Nonce'=>$nonce,
+				'Encrypt'=>$encrypted,
+		];
+		
+		return array(true, wxDataFormat::arraytoxml($arr));
+		
+	}
+	
+	/**
+	 * 对需要加密的明文进行填充补位
+	 * @param $text 需要进行填充补位操作的明文
+	 * @return 补齐明文字符串
+	 */
+	public function encode($text)
+	{
+		$block_size = 32;
+		
+		$text_length = strlen($text);
+		//计算需要填充的位数
+		$amount_to_pad = $block_size - ($text_length % $block_size);
+		if ($amount_to_pad == 0) {
+			$amount_to_pad = block_size;
 		}
-		return [true,$xml_content];
+		//获得补位所用的字符
+		$pad_chr = chr($amount_to_pad);
+		$tmp = "";
+		for ($index = 0; $index < $amount_to_pad; $index++) {
+			$tmp .= $pad_chr;
+		}
+		return $text . $tmp;
+	}
+	
+	/**
+	 * 随机生成16位字符串
+	 * @return string 生成的字符串
+	 */
+	public function getRandomStr()
+	{
 		
-		
+		$str = "";
+		$str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+		$max = strlen($str_pol) - 1;
+		for ($i = 0; $i < 16; $i++) {
+			$str .= $str_pol[mt_rand(0, $max)];
+		}
+		return $str;
 	}
 	
 	/**
@@ -60,7 +118,7 @@ class wxEncodingCrypt {
 	 * @param decrypted 解密后的明文
 	 * @return 删除填充补位后的明文
 	 */
-	public function decode($text){
+	private function decode($text){
 		
 		$pad = ord(substr($text, -1));
 		if ($pad < 1 || $pad > 32) {
@@ -77,7 +135,7 @@ class wxEncodingCrypt {
 	 * @param string $nonce 随机字符串
 	 * @param string $encrypt 密文消息
 	 */
-	public function getSHA1($token, $timestamp, $nonce, $encrypt_msg){
+	private function getSHA1($token, $timestamp, $nonce, $encrypt_msg){
 		$array = array($encrypt_msg, $token, $timestamp, $nonce);
 		sort($array, SORT_STRING);
 		$str = implode($array);

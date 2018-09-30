@@ -4,6 +4,8 @@ namespace  sunlsoftunit\extensions\weixin;
 use sunlsoftunit\extensions\weixin\TestCase;
 use sunlsoft\yiiweixin\request\wxObjcet;
 use sunlsoft\yiiweixin\request\wxDataFormat;
+use sunlsoft\yiiweixin\request\wxEncodingCrypt;
+use sunlsoft\yiiweixin\request\wxRequest;
 
 
 class wxRequestTest extends TestCase{
@@ -26,6 +28,47 @@ class wxRequestTest extends TestCase{
 		
 		$this->check($arr, $MessageText);
 
+	}
+	
+	public function testDMessageText(){
+		$wxObjcet =  new wxObjcet();
+		$XML = "<xml><ToUserName><![CDATA[oia2Tj我是中文123123jewbmiOUlr6X-1crbLOvLw]]></ToUserName><FromUserName><![CDATA[gh_7f083739789a]]></FromUserName><CreateTime>1407743423</CreateTime><MsgType><![CDATA[video]]></MsgType><Video><MediaId><![CDATA[eYJ1MbwPRJtOvIEabaxHs7TX2D-HV71s79GUxqdUkjm6Gs2Ed1KF3ulAOA9H1xG0]]></MediaId><Title><![CDATA[testCallBackReplyVideo]]></Title><Description><![CDATA[testCallBackReplyVideo]]></Description></Video></xml>";
+		
+		$wxObjcet->appid = 'wxb11529c136998cb6';
+		$wxObjcet->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
+		$wxObjcet->Token = 'pamtest';
+		$wxObjcet->EncodingType = 2;
+		
+		$wxEncodingCrypt = new wxEncodingCrypt();
+		
+		$xmlArr = wxDataFormat::xmltoarray($XML);		
+		
+		list($resBool,$txt) = $wxEncodingCrypt->encryptMsg($wxObjcet->appid, $wxObjcet->Token,$wxObjcet->EncodingAESKey, $XML);
+		
+		$this->assertTrue($resBool,"加密失败");
+		
+		
+		$arr = wxDataFormat::xmltoarray($txt);
+		
+		$wxRequest = new wxRequest();
+		$wxRequest->appid = 'wxb11529c136998cb6';
+		$wxRequest->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
+		$wxRequest->Token = 'pamtest';
+		$wxRequest->EncodingType = 2;
+		$wxRequest->setMessageAesTxt($txt);
+		$wxRequest->setNonce($arr['Nonce']);
+		
+		
+// 		\Yii::$app->request->setQueryParams(['nonce'=>$arr['Nonce']]);
+		$rest = $wxRequest->getMessageText();
+
+		
+		
+		list($encodingBool,$txt) = $wxEncodingCrypt->decryptMsg( $wxObjcet->Token,$wxObjcet->EncodingAESKey, $arr['MsgSignature'], $arr['TimeStamp'],$arr['Nonce'], $arr['Encrypt']);
+		
+		$this->assertTrue($encodingBool,"解密失败");
+		
+		
 	}
 	
 	
@@ -208,6 +251,7 @@ class wxRequestTest extends TestCase{
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new wxObjcet();
 		$wxRequest = $wxObjcet->getWxRequest();
+		
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventScan();
