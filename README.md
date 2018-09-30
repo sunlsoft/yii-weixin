@@ -6,4 +6,4 @@
     <br>
 </p>
 
-[![Build Status](https://travis-ci.org/sunlsoft/yii-weixin.svg?branch=master](https://travis-ci.org/sunlsoft/yii-weixin)
+[![Build Status](https://travis-ci.org/sunlsoft/yii-weixin.svg?branch=master)](https://travis-ci.org/sunlsoft/yii-weixin)
