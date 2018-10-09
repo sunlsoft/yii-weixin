@@ -23,11 +23,22 @@ class wxResponeVoice extends wxResponseBaseObjct{
 	 */
 	public $MediaId;
 	
-	public function getArr(){
-		$arr = $this->getBaseArr();
-		$arr['MsgType'] = $this->MsgType;
-		$arr['MediaId'] = $this->MediaId;
-		return $arr;
+	
+	
+	public function rules(){
+		$parentRules = parent::rules();
+		array_push($parentRules,[['MsgType', 'MediaId'], 'required']);
+		
+		return $parentRules;
 	}
+	
+	public function attributeLabels(){
+		return [
+				'MsgType'=>'消息的类型',
+				'MediaId'=>'通过素材管理中的接口上传多媒体文件，得到的id。',
+		];
+	}
+	
+	
 }
 

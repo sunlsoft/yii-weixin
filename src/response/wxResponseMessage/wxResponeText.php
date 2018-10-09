@@ -22,11 +22,20 @@ class wxResponeText extends wxResponseBaseObjct{
 	 */
 	public $Content;
 	
-	public function getArr(){
-		$arr = $this->getBaseArr();
-		$arr['MsgType'] = $this->MsgType;
-		$arr['Content'] = $this->Content;
-		return $arr;
+	
+	public function rules(){
+		$parentRules = parent::rules();
+		array_push($parentRules,[['MsgType', 'Content'], 'required']);
+
+		return $parentRules;
 	}
+	
+	public function attributeLabels(){
+		return [
+				'MsgType'=>'消息的类型',
+				'Content'=>'回复的消息内容',
+		];
+	}
+	
 }
 

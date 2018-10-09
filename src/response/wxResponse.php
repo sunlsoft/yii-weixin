@@ -68,6 +68,12 @@ class wxResponse extends Component{
 	public $EncodingAESKey = '';
 	
 	/**
+	 * 用户的openId
+	 * @var string
+	 */
+	public $openId = '';
+	
+	/**
 	 * 加密模式
 	 * @var unknown
 	 */
@@ -153,7 +159,7 @@ class wxResponse extends Component{
 		$arr['EncodingAESKey'] = $this->EncodingAESKey;
 		$arr['Token'] = $this->Token;
 		$arr['appid'] = $this->appid;
-		
+		$arr['ToUserName'] = $this->openId;
 		return \Yii::createObject($arr);
 	}
 	

@@ -22,11 +22,20 @@ class wxResponeImage extends wxResponseBaseObjct{
 	 */
 	public $MediaId;
 	
-	public function getArr(){
-		$arr = $this->getBaseArr();
-		$arr['MsgType'] = $this->MsgType;
-		$arr['MediaId'] = $this->MediaId;
-		return $arr;
+	
+	public function rules(){
+		$parentRules = parent::rules();
+		array_push($parentRules, [['MediaId', 'MsgType'], 'required']);
+		
+		return $parentRules;
 	}
+	
+	public function attributeLabels(){
+		return [
+				'MediaId' => '通过素材管理中的接口上传多媒体文件，得到的id。',
+				'MsgType'=>'消息的类型',
+		];
+	}
+	
 }
 

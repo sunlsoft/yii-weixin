@@ -29,29 +29,13 @@ class wxResponeNews extends wxResponseBaseObjct{
 	public $Articles = [];
 	
 	/**
-	 * 图文消息标题
-	 * @var string
+	 * 添加文章
+	 * @param unknown $Title
+	 * @param unknown $Description
+	 * @param unknown $PicUrl
+	 * @param unknown $Url
+	 * @return boolean
 	 */
-	// public $Title = '';
-	
-	/**
-	 * 图文消息描述
-	 * @var string
-	 */
-	// public $Description = '';
-	
-	/**
-	 * 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
-	 * @var string
-	 */
-	// public $PicUrl = '';
-	
-	/**
-	 * 点击图文消息跳转链接
-	 * @var string
-	 */
-	// public $Url = '';
-	
 	public function sendArticle($Title,$Description,$PicUrl,$Url){
 		$this->ArticleCount++;
 		$this->Articles[] = [
@@ -65,16 +49,21 @@ class wxResponeNews extends wxResponseBaseObjct{
 		return true;
 	}
 	
-	public function getArr(){
-		$arr = $this->getBaseArr();
-		$arr['MsgType'] = $this->MsgType;
-		$arr['ArticleCount'] = $this->ArticleCount;
-		$arr['Articles'] = $this->Articles;
-// 		$arr['Title'] = $this->Title;
-// 		$arr['Description'] = $this->Description;
-// 		$arr['PicUrl'] = $this->PicUrl;
-// 		$arr['Url'] = $this->Url;
-		return $arr;
+	public function rules(){
+		$parentRules = parent::rules();
+		array_push($parentRules,[['ArticleCount', 'MsgType','Articles'], 'required']);
+		
+		return $parentRules;
 	}
+	
+	public function attributeLabels(){
+		return [
+				'ArticleCount' => '图文消息个数，限制为1条以内',
+				'MsgType'=>'消息的类型',
+				'Articles'=>'图文消息信息',
+		];
+	}
+	
+
 }
 

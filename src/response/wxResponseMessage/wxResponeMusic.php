@@ -47,15 +47,30 @@ class wxResponeMusic extends wxResponseBaseObjct{
 	 */
 	public $ThumbMediaId = '';
 	
-	public function getArr(){
-		$arr = $this->getBaseArr();
-		$arr['MsgType'] = $this->MsgType;
-		$arr['Title'] = $this->Title;
-		$arr['Description'] = $this->Description;
-		$arr['MusicURL'] = $this->MusicURL;
-		$arr['HQMusicUrl'] = $this->HQMusicUrl;
-		$arr['ThumbMediaId'] = $this->ThumbMediaId;
-		return $arr;
+	
+	public function rules(){
+		$parentRules = parent::rules();
+		array_push($parentRules, 
+				[['ThumbMediaId','MsgType'], 'required'],
+				[['Title','Description'], 'string'],
+				[['MusicURL','HQMusicUrl'], 'string']
+		);
+		
+		return $parentRules;
 	}
+	
+	public function attributeLabels(){
+		return [
+				'ThumbMediaId' => '通过素材管理中的接口上传多媒体文件，得到的id。',
+				'MsgType'=>'消息的类型',
+				'Title'=>'音乐标题',
+				'Description'=>'音乐描述',
+				'MusicURL'=>'音乐链接',
+				'HQMusicUrl'=>'高质量音乐链接，WIFI环境优先使用该链接播放音乐',
+				'ThumbMediaId'=>'缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id'
+		];
+	}
+	
+	
 }
 

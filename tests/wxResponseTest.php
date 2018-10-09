@@ -2,14 +2,21 @@
 namespace  sunlsoftunit\extensions\weixin;
 
 use sunlsoft\yiiweixin\weixin;
+use sunlsoft\yiiweixin\base\wxDataFormat;
 
 class wxResponseTest extends TestCase{
 	
 	public function testSendText(){
-		$weixin =  new weixin();
-		$weixin->appid = 'wxb11529c136998cb6';
-		$weixin->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
-		$weixin->Token = 'pamtest';
+		$weixin =  $this->getWeixinObj();
+		$arr = [
+				"ToUserName"=>"ToUserName",
+				"FromUserName"=>"FromUserName",
+				"CreateTime"=>100,
+				"MsgType"=>'text',
+				"Content"=>'Content',
+				"MsgId"=>200,
+		];
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
 		$wxResponse = $weixin->getResponse();
 		
@@ -17,30 +24,50 @@ class wxResponseTest extends TestCase{
 		$textMessage->Content = '111';
 		
 		$RES = $textMessage->getResponse();
-		
+	
 		$this->assertNotFalse($RES,'Text 加密失败');
 	}
 	
 	public function testSendImage(){
-		$weixin =  new weixin();
-		$weixin->appid = 'wxb11529c136998cb6';
-		$weixin->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
-		$weixin->Token = 'pamtest';
+		$weixin =  $this->getWeixinObj();
+		
+		$arr = [
+				"ToUserName"=>"ToUserName",
+				"FromUserName"=>"FromUserName",
+				"CreateTime"=>100,
+				"MsgType"=>'image',
+				"PicUrl"=>'PicUrl',
+				"MediaId"=>230,
+				"MsgId"=>200,
+		];
+	
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		
+	
 		
 		$wxResponse = $weixin->getResponse();
+	
 		$obj = $wxResponse->getResponseImage();
 		$obj->MediaId = 100;
 		
 		$RES = $obj->getResponse();
-		
+	
 		$this->assertNotFalse($RES,'Image 加密失败');
 	}
 	
 	public function testSendVoice(){
-		$weixin =  new weixin();
-		$weixin->appid = 'wxb11529c136998cb6';
-		$weixin->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
-		$weixin->Token = 'pamtest';
+		$weixin =  $this->getWeixinObj();
+		$arr = [
+				"ToUserName"=>"ToUserName",
+				"FromUserName"=>"FromUserName",
+				"CreateTime"=>100,
+				"MsgType"=>'image',
+				"PicUrl"=>'PicUrl',
+				"MediaId"=>230,
+				"MsgId"=>200,
+		];
+		
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
 		$wxResponse = $weixin->getResponse();
 		$obj = $wxResponse->getResponseVoice();
@@ -52,10 +79,18 @@ class wxResponseTest extends TestCase{
 	}
 	
 	public function testSendVideo(){
-		$weixin =  new weixin();
-		$weixin->appid = 'wxb11529c136998cb6';
-		$weixin->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
-		$weixin->Token = 'pamtest';
+		$weixin =  $this->getWeixinObj();
+		$arr = [
+				"ToUserName"=>"ToUserName",
+				"FromUserName"=>"FromUserName",
+				"CreateTime"=>100,
+				"MsgType"=>'image',
+				"PicUrl"=>'PicUrl',
+				"MediaId"=>230,
+				"MsgId"=>200,
+		];
+		
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
 		$wxResponse = $weixin->getResponse();
 		$obj = $wxResponse->getResponseVideo();
@@ -69,10 +104,18 @@ class wxResponseTest extends TestCase{
 	}
 	
 	public function testSendMusic(){
-		$weixin =  new weixin();
-		$weixin->appid = 'wxb11529c136998cb6';
-		$weixin->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
-		$weixin->Token = 'pamtest';
+		$weixin =  $this->getWeixinObj();
+		$arr = [
+				"ToUserName"=>"ToUserName",
+				"FromUserName"=>"FromUserName",
+				"CreateTime"=>100,
+				"MsgType"=>'image',
+				"PicUrl"=>'PicUrl',
+				"MediaId"=>230,
+				"MsgId"=>200,
+		];
+		
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
 		$wxResponse = $weixin->getResponse();
 		$obj = $wxResponse->getResponseMusic();;
@@ -91,10 +134,18 @@ class wxResponseTest extends TestCase{
 	}
 	
 	public function testSendNews(){
-		$weixin =  new weixin();
-		$weixin->appid = 'wxb11529c136998cb6';
-		$weixin->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
-		$weixin->Token = 'pamtest';
+		$weixin =  $this->getWeixinObj();
+		$arr = [
+				"ToUserName"=>"ToUserName",
+				"FromUserName"=>"FromUserName",
+				"CreateTime"=>100,
+				"MsgType"=>'image',
+				"PicUrl"=>'PicUrl',
+				"MediaId"=>230,
+				"MsgId"=>200,
+		];
+		
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
 		$wxResponse = $weixin->getResponse();
 		$obj = $wxResponse->getResponseNews();

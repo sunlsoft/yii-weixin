@@ -50,6 +50,24 @@ class wxResponseBaseObjct extends Model{
 	public $EncodingType = weixin::ENCODING_TXT;
 	
 	
+	public function rules(){
+		return [
+				[['ToUserName', 'FromUserName'], 'required'],
+		];
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+				'ToUserName' => '接收方帐号（收到的OpenID）',
+				'FromUserName'=>'开发者微信号',
+		];
+	}
+	
+	
 	/**
 	 * 消息的类型
 	 * @var string
@@ -66,25 +84,33 @@ class wxResponseBaseObjct extends Model{
 	}
 	
 	public function getArr(){
-		
+		if (!$this->validate()){
+			return false;
+		}
+		return $this->getAttributes();
 	}
 	
 	public function getResponseXML(){
 		$butes = $this->getArr();
-		
-		return wxDataFormat::arraytoxml($butes);	
+		return $butes === false ? false : wxDataFormat::arraytoxml($butes);
 	}
 	
 	public function getResponse(){
 		$xml = $this->getResponseXML();
-		
-		$WxSecurity = new WxSecurity();
-		list($resBool,$txt) = $WxSecurity->encryptMsg($this->appid, $this->Token,$this->EncodingAESKey, $xml);
-		if (!$resBool){
+		if (!$xml){
 			return false;
 		}
 		
-		return $txt;
+		// 如果是加密方式
+		if ($this->EncodingType == weixin::ENCODING_AES){
+			$WxSecurity = new WxSecurity();
+			list($resBool,$xml) = $WxSecurity->encryptMsg($this->appid, $this->Token,$this->EncodingAESKey, $xml);
+			if (!$resBool){
+				return false;
+			}
+		}
+		
+		return $xml;
 	}
 	
 }

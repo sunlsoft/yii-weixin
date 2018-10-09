@@ -35,13 +35,20 @@ class wxResponeVideo extends wxResponseBaseObjct{
 	 */
 	public $Description = '';
 	
-	public function getArr(){
-		$arr = $this->getBaseArr();
-		$arr['MsgType'] = $this->MsgType;
-		$arr['MediaId'] = $this->MediaId;
-		$arr['Title'] = $this->Title;
-		$arr['Description'] = $this->Description;
-		return $arr;
+	
+	public function rules(){
+		$parentRules = parent::rules();
+		array_push($parentRules,[['MsgType', 'MediaId','Title','Description'], 'required']);
+		
+		return $parentRules;
 	}
+	
+	public function attributeLabels(){
+		return [
+				'MsgType'=>'消息的类型',
+				'Content'=>'回复的消息内容',
+		];
+	}
+	
 }
 

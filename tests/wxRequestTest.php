@@ -12,7 +12,6 @@ class wxRequestTest extends TestCase{
 	
 	public function testGetMessageText(){
 		$weixin =  new weixin();
-		$wxRequest = $weixin->getRequest();
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -21,9 +20,9 @@ class wxRequestTest extends TestCase{
 				"Content"=>'Content',
 				"MsgId"=>200,
 		];
+		$weixin->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $weixin->getRequest();
 		$MessageText = $wxRequest->getMessageText();
 		
 		$this->check($arr, $MessageText);
@@ -49,14 +48,16 @@ class wxRequestTest extends TestCase{
 		
 		
 		$arr = wxDataFormat::xmltoarray($txt);
+		$wxObjcet->setMessageAesTxt($txt);
+		$wxObjcet->setRequestNonce($arr['Nonce']);
+		$wxObjcet->getRequest();
 		
-		$wxRequest = new wxRequest();
+		
+		$wxRequest = $wxObjcet->getRequest();
 		$wxRequest->appid = 'wxb11529c136998cb6';
 		$wxRequest->EncodingAESKey = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG';
 		$wxRequest->Token = 'pamtest';
 		$wxRequest->EncodingType = 2;
-		$wxRequest->setMessageAesTxt($txt);
-		$wxRequest->setNonce($arr['Nonce']);
 		
 		
 // 		\Yii::$app->request->setQueryParams(['nonce'=>$arr['Nonce']]);
@@ -84,9 +85,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageImage();
 		$this->check($arr, $obj);
 		
@@ -105,9 +106,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageVoice();
 		$this->check($arr, $obj);
 		
@@ -125,9 +126,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageVideo();
 		$this->check($arr, $obj);
 		
@@ -145,9 +146,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageShortvideo();
 		$this->check($arr, $obj);
 		
@@ -168,9 +169,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageLocation();
 		$this->check($arr, $obj);
 		
@@ -190,10 +191,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		
 		$wxRequest = $wxObjcet->getRequest();
-		
-		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageLink();
 		$this->check($arr, $obj);
 		
@@ -211,10 +211,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$wxRequest = $wxObjcet->getRequest();
-		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+
 		$obj = $wxRequest->getMessageEventSubscribe();
 		$this->check($arr, $obj);
 		
@@ -231,9 +230,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageEventUnsubscribe();
 		$this->check($arr, $obj);
 		
@@ -251,10 +250,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		
 		$wxRequest = $wxObjcet->getRequest();
-		
-		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventScan();
 		$this->check($arr, $obj);
 		
@@ -274,9 +272,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageEventLocation();
 		$this->check($arr, $obj);
 		
@@ -294,9 +292,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageEventClick();
 		$this->check($arr, $obj);
 		
@@ -313,9 +311,9 @@ class wxRequestTest extends TestCase{
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
 		$wxObjcet =  new weixin();
-		$wxRequest = $wxObjcet->getRequest();
+		$wxObjcet->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		
-		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
+		$wxRequest = $wxObjcet->getRequest();
 		$obj = $wxRequest->getMessageEventView();
 		$this->check($arr, $obj);
 		

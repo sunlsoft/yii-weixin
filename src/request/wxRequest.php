@@ -122,13 +122,7 @@ class wxRequest extends Component{
 	 * @var string
 	 */
 	public $EncodingAESKey = '';
-	
-	/**
-	 * 微信返回的随机数
-	 * @var string
-	 */
-	public $nonce = NULL;
-	
+
 	
 	/**
 	 * 加密模式
@@ -238,45 +232,10 @@ class wxRequest extends Component{
 			}
 			$this->_message_type_class[$key] = ['class'=>$value['class'],'function'=>$value['function']];
 		}
-		
-		// 如果是加密模式
-		if ($this->EncodingType == weixin::ENCODING_AES){
-			$WxSecurity = new WxSecurity();
-			$wxArr = wxDataFormat::xmltoarray($this->message_aes_txt);
-			$msgSignature = isset($wxArr['MsgSignature']) ? $wxArr['MsgSignature'] : '';
-			$encrypt = isset($wxArr['Encrypt']) ? $wxArr['Encrypt'] : '';
-			$TimeStamp = isset($wxArr['TimeStamp']) ? $wxArr['TimeStamp'] : '';
-			$nonce = $this->getNoce();
-			list($resBool, $this->message_txt_arr) = $WxSecurity->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
-			$this->message_txt_arr = $resBool ?  wxDataFormat::xmltoarray($this->message_txt_arr ) : [];
-			
-		}else {
-			$this->message_txt_arr = wxDataFormat::xmltoarray($this->message_aes_txt);
-		}
 	}
 	
 	
-	public function getMesssageAesTxt(){
-		if (empty($this->message_aes_txt)){
-			$this->message_aes_txt = file_get_contents("php://input");
-		}
-		return $this->message_aes_txt;
-	}
-	
-	public function setMessageAesTxt($txt){
-		$this->message_aes_txt = $txt;
-	}
-	
-	public function setNonce($nonce){
-		$this->nonce = $nonce;
-	}
-	
-	public function getNoce(){
-		if ($this->nonce === null){
-			$this->nonce = \Yii::$app->request->get('nonce');
-		}
-		return $this->nonce;
-	}
+
 	
 	/**
 	 * 文本消息
