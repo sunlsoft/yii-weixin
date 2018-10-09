@@ -111,7 +111,7 @@ class weixin extends Component{
 	/**
 	 * 解密微信的加密信息
 	 */
-	private function getMessageTxtArr(){
+	public function getMessageTxtArr(){
 		if ($this->EncodingType == weixin::ENCODING_AES){
 			$WxSecurity = new WxSecurity();
 			$wxArr = wxDataFormat::xmltoarray($this->getMesssageAesTxt());
