@@ -78,6 +78,18 @@ class weixin extends Component{
 	 */
 	public $openId = '';
 	
+	/**
+	 * 消息类型
+	 * @var string
+	 */
+	public $MsgType = FALSE;
+	
+	/**
+	 * 事件类型
+	 * @var string
+	 */
+	public $Event = FALSE;
+	
 	
 	
 	/**
@@ -113,6 +125,8 @@ class weixin extends Component{
 			$this->message_txt_arr = wxDataFormat::xmltoarray($this->getMesssageAesTxt());
 		}
 		$this->openId = isset($this->message_txt_arr['FromUserName']) ? $this->message_txt_arr['FromUserName'] : '';
+		$this->MsgType = isset($this->message_txt_arr['MsgType']) ? $this->message_txt_arr['MsgType'] : '';
+		$this->Event = isset($this->message_txt_arr['Event']) ? $this->message_txt_arr['Event'] : '';
 		
 		return $this->message_txt_arr;
 	}
