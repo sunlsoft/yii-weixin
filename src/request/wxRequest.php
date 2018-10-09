@@ -17,30 +17,15 @@ use sunlsoft\yiiweixin\request\wxRequestMessage\wxRequestEventScan;
 use sunlsoft\yiiweixin\request\wxRequestMessage\wxRequestEventUnsubscribe;
 use sunlsoft\yiiweixin\request\wxRequestMessage\wxRequestEventSubscribe;
 use yii\base\Component;
+use sunlsoft\yiiweixin\base\WxSecurity;
+use sunlsoft\yiiweixin\base\wxDataFormat;
+use sunlsoft\yiiweixin\weixin;
 
 /**
  * @author sun
  * @desc   微信的请求接收类
  */
 class wxRequest extends Component{
-	
-	/**
-	 * 明文加密
-	 * @var int
-	 */
-	const ENCODING_TXT = 1;
-	
-	/**
-	 * 密文加密
-	 * @var int
-	 */
-	const ENCODING_AES = 2;
-	
-	/**
-	 * 兼容模式
-	 * @var integer
-	 */
-	const ENCODING_AUTO = 3;
 	
 	/**
 	 * 文本消息
@@ -149,7 +134,8 @@ class wxRequest extends Component{
 	 * 加密模式
 	 * @var unknown
 	 */
-	public $EncodingType = self::ENCODING_TXT;
+	public $EncodingType = weixin::ENCODING_TXT;
+
 	
 	/**
 	 * 不同类型消息对于不同的类
@@ -218,11 +204,6 @@ class wxRequest extends Component{
 	 */
 	public $message_type = FALSE;
 	
-	/**
-	 * 消息原始内容
-	 * @var string
-	 */
-	public $message_aes_txt = '';
 	
 	/**
 	 * 消息解密后内容
@@ -230,16 +211,18 @@ class wxRequest extends Component{
 	 */
 	public $message_txt_arr = [];
 	
+	/**
+	 * 消息原始数据
+	 * @var string
+	 */
+	public $message_aes_txt = '';
+	
 	
 	/**
 	 * 消息的类型
 	 * @var string
 	 */
 	private $_message_obj ;
-	
-	public function init(){
-		$this->message_aes_txt = file_get_contents("php://input"); 
-	}
 	
 
 	/**
@@ -256,37 +239,27 @@ class wxRequest extends Component{
 			$this->_message_type_class[$key] = ['class'=>$value['class'],'function'=>$value['function']];
 		}
 		
-		foreach ($this->event_type_class as $key=>$value){
-			if (!isset($value['class'])){
-				throw new Exception($key." no class");
-			}
-			if (!isset($value['function'])){
-				throw new Exception($key." no function");
-			}
-			$this->_event_type_class[$key] = ['class'=>$value['class'],'function'=>$value['function']];
-		}
-// 		$this->message_aes_txt = file_get_contents("php://input"); 
 		// 如果是加密模式
-		if ($this->EncodingType == self::ENCODING_AES){
-			$wxEncodingCrypt = new wxEncodingCrypt();
+		if ($this->EncodingType == weixin::ENCODING_AES){
+			$WxSecurity = new WxSecurity();
 			$wxArr = wxDataFormat::xmltoarray($this->message_aes_txt);
 			$msgSignature = isset($wxArr['MsgSignature']) ? $wxArr['MsgSignature'] : '';
 			$encrypt = isset($wxArr['Encrypt']) ? $wxArr['Encrypt'] : '';
 			$TimeStamp = isset($wxArr['TimeStamp']) ? $wxArr['TimeStamp'] : '';
 			$nonce = $this->getNoce();
-			list($resBool, $this->message_txt_arr) = $wxEncodingCrypt->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
+			list($resBool, $this->message_txt_arr) = $WxSecurity->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
 			$this->message_txt_arr = $resBool ?  wxDataFormat::xmltoarray($this->message_txt_arr ) : [];
 			
 		}else {
 			$this->message_txt_arr = wxDataFormat::xmltoarray($this->message_aes_txt);
 		}
-		
-		
-		parent::init();
 	}
 	
 	
 	public function getMesssageAesTxt(){
+		if (empty($this->message_aes_txt)){
+			$this->message_aes_txt = file_get_contents("php://input");
+		}
 		return $this->message_aes_txt;
 	}
 	
@@ -310,7 +283,6 @@ class wxRequest extends Component{
 	 * @return wxRequestText
 	 */
 	public function getMessageText(){
-		
 		return $this->getmessage(self::MESSAGE_TEXT);
 	}
 	
@@ -425,7 +397,7 @@ class wxRequest extends Component{
 		$className = $this->_message_type_class[$typeName]['class'];
 		$type = $this->message_txt_arr;
 		$type['class'] = $className;
-	
+		
 		$object =  \Yii::createObject($className);
 		foreach ($this->message_txt_arr as $k=>$v){
 			isset($object->$k) ? $object->$k = $v : '';

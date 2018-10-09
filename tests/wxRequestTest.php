@@ -2,17 +2,17 @@
 namespace  sunlsoftunit\extensions\weixin;
 
 use sunlsoftunit\extensions\weixin\TestCase;
-use sunlsoft\yiiweixin\request\wxObjcet;
-use sunlsoft\yiiweixin\request\wxDataFormat;
-use sunlsoft\yiiweixin\request\wxEncodingCrypt;
 use sunlsoft\yiiweixin\request\wxRequest;
+use sunlsoft\yiiweixin\weixin;
+use sunlsoft\yiiweixin\base\wxDataFormat;
+use sunlsoft\yiiweixin\base\WxSecurity;
 
 
 class wxRequestTest extends TestCase{
 	
 	public function testGetMessageText(){
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$weixin =  new weixin();
+		$wxRequest = $weixin->getRequest();
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -31,7 +31,7 @@ class wxRequestTest extends TestCase{
 	}
 	
 	public function testDMessageText(){
-		$wxObjcet =  new wxObjcet();
+		$wxObjcet =  new weixin();
 		$XML = "<xml><ToUserName><![CDATA[oia2Tj我是中文123123jewbmiOUlr6X-1crbLOvLw]]></ToUserName><FromUserName><![CDATA[gh_7f083739789a]]></FromUserName><CreateTime>1407743423</CreateTime><MsgType><![CDATA[video]]></MsgType><Video><MediaId><![CDATA[eYJ1MbwPRJtOvIEabaxHs7TX2D-HV71s79GUxqdUkjm6Gs2Ed1KF3ulAOA9H1xG0]]></MediaId><Title><![CDATA[testCallBackReplyVideo]]></Title><Description><![CDATA[testCallBackReplyVideo]]></Description></Video></xml>";
 		
 		$wxObjcet->appid = 'wxb11529c136998cb6';
@@ -39,7 +39,7 @@ class wxRequestTest extends TestCase{
 		$wxObjcet->Token = 'pamtest';
 		$wxObjcet->EncodingType = 2;
 		
-		$wxEncodingCrypt = new wxEncodingCrypt();
+		$wxEncodingCrypt = new WxSecurity();
 		
 		$xmlArr = wxDataFormat::xmltoarray($XML);		
 		
@@ -83,8 +83,8 @@ class wxRequestTest extends TestCase{
 				"MsgId"=>200,
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageImage();
@@ -104,8 +104,8 @@ class wxRequestTest extends TestCase{
 				"MsgId"=>200,
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageVoice();
@@ -124,8 +124,8 @@ class wxRequestTest extends TestCase{
 				"MsgId"=>200,
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageVideo();
@@ -144,8 +144,8 @@ class wxRequestTest extends TestCase{
 				"MsgId"=>200,
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageShortvideo();
@@ -167,8 +167,8 @@ class wxRequestTest extends TestCase{
 				"MsgId"=>200,
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageLocation();
@@ -189,8 +189,8 @@ class wxRequestTest extends TestCase{
 				"MsgId"=>200,
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
@@ -210,8 +210,9 @@ class wxRequestTest extends TestCase{
 				"Ticket"=>"Ticket"
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventSubscribe();
@@ -220,7 +221,7 @@ class wxRequestTest extends TestCase{
 		
 	}
 	
-	public function getMessageEventUnsubscribe(){
+	public function testGetMessageEventUnsubscribe(){
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -229,8 +230,8 @@ class wxRequestTest extends TestCase{
 				"Event"=>'unsubscribe',
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventUnsubscribe();
@@ -238,7 +239,7 @@ class wxRequestTest extends TestCase{
 		
 	}
 	
-	public function getMessageEventScan(){
+	public function testGetMessageEventScan(){
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -249,8 +250,8 @@ class wxRequestTest extends TestCase{
 				"Ticket"=>"Ticket"
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
@@ -260,7 +261,7 @@ class wxRequestTest extends TestCase{
 		
 	}
 	
-	public function getMessageEventLocation(){
+	public function testGetMessageEventLocation(){
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -272,8 +273,8 @@ class wxRequestTest extends TestCase{
 				"Precision"=>119.385040
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventLocation();
@@ -282,7 +283,7 @@ class wxRequestTest extends TestCase{
 		
 	}
 	
-	public function getMessageEventClick(){
+	public function testGetMessageEventClick(){
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -292,8 +293,8 @@ class wxRequestTest extends TestCase{
 				"EventKey"=>'EventKey',
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventClick();
@@ -301,7 +302,7 @@ class wxRequestTest extends TestCase{
 		
 	}
 	
-	public function getMessageEventView(){
+	public function testGetMessageEventView(){
 		$arr = [
 				"ToUserName"=>"ToUserName",
 				"FromUserName"=>"FromUserName",
@@ -311,8 +312,8 @@ class wxRequestTest extends TestCase{
 				"EventKey"=>'EventKey',
 		];
 // 		file_get_contents("php://input") = wxDataFormat::arraytoxml($this->getMessageText());
-		$wxObjcet =  new wxObjcet();
-		$wxRequest = $wxObjcet->getWxRequest();
+		$wxObjcet =  new weixin();
+		$wxRequest = $wxObjcet->getRequest();
 		
 		$wxRequest->setMessageAesTxt(wxDataFormat::arraytoxml($arr));
 		$obj = $wxRequest->getMessageEventView();
@@ -320,13 +321,6 @@ class wxRequestTest extends TestCase{
 		
 	}
 	
-	
-// 	public function testMessage(){
-// 		$this->getMessageText();
-// 		$this->getMessageImage();
-		
-// 		return false;
-// 	}
 	
 	private function check($arr,$obj){
 		foreach ($arr as $k=>$v){

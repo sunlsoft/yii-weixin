@@ -1,5 +1,5 @@
 <?php
-namespace sunlsoft\yiiweixin\request;
+namespace sunlsoft\yiiweixin\base;
 
 use yii\base\BaseObject;
 
@@ -30,15 +30,29 @@ class wxDataFormat extends BaseObject{
 	 */
 	public static function arraytoxml($arr){
 		$xml = "<xml>";
-		foreach ($arr as $key => $val)
-		{
+		$xml .=self::arraytoxmlStr($arr);
+		$xml.="</xml>";		
+
+		return $xml;
+	}
+	
+	
+	/**
+	 * 数组转换成xml格式
+	 * @param array $data
+	 * @return string
+	 */
+	public static function arraytoxmlStr($arr){
+		$xml = '';
+		foreach ($arr as $key => $val){
 			if (is_numeric($val)){
 				$xml.="<".$key.">".$val."</".$key.">";
-			}else{
+			}elseif (is_string($val)){
 				$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+			}elseif (is_array($val)){
+				$xml .= (is_numeric($key)) ?  self::arraytoxmlStr($val) : "<".$key.">". self::arraytoxmlStr($val)."</".$key.">";
 			}
 		}
-		$xml.="</xml>";
 		
 		return $xml; 
 	}

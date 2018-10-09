@@ -1,12 +1,16 @@
 <?php
-namespace sunlsoft\yiiweixin\request;
+namespace sunlsoft\yiiweixin\base;
 
+use sunlsoft\yiiweixin\base\wxDataFormat;
+use yii\base\Component;
 
 /**
+ * 微信的加密解密
  * @author sun
- * @desc   微信的消息加密处理类
+ *
  */
-class wxEncodingCrypt {
+class WxSecurity extends Component{
+	
 	
 	/**
 	 * 检验消息的真实性，并且获取解密后的明文
@@ -16,40 +20,40 @@ class wxEncodingCrypt {
 	 * @param string $timestamp			时间戳
 	 * @param string $nonce				随机数
 	 * @param string $encrypt			解密的密文
-	 * @return array					['结果','信息']		如果正确 第一个访问为true  如果解密失败结果返回false 
+	 * @return array					['结果','信息']		如果正确 第一个访问为true  如果解密失败结果返回false
 	 */
 	public function decryptMsg($token , $encodingAesKey = '',$msgSignature, $timestamp = null, $nonce, $encrypt){
 		
 		$signature = $this->getSHA1($token, $timestamp, $nonce, $encrypt);
-
+		
 		if ($signature != $msgSignature){
 			return [false,'签名不正确'];
 		}
 		
-// 		$ciphertext_dec = base64_decode($encrypt);
+		// 		$ciphertext_dec = base64_decode($encrypt);
 		$key= base64_decode($encodingAesKey . "=");
 		$iv = substr($key, 0, 16);
 		$xml=openssl_decrypt(base64_decode($encrypt), "aes-256-cbc", $key, OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING, $iv);
-
+		
 		
 		$content = substr($xml, 16, strlen($xml));
 		$len_list = unpack("N", substr($content, 0, 4));
 		$xml_len = $len_list[1];
 		$rxml = substr($content, 4, $xml_len);
-
+		
 		return [true,$rxml];
-
+		
 	}
 	
-
+	
 	/**
-	 * 
+	 *
 	 * @param string $appid				公众号appid
 	 * @param string $token				公众号token
 	 * @param string $encodingAesKey	公众号加密密钥
 	 * @param string $nonce				随机数
 	 * @param string $text				加密的密文
-	 * @return boolean[]|string[]		['结果','信息']		如果正确 第一个访问为true  如果解密失败结果返回false 
+	 * @return boolean[]|string[]		['结果','信息']		如果正确 第一个访问为true  如果解密失败结果返回false
 	 */
 	public function encryptMsg($appid,$token ,$encodingAesKey = '' ,$text){
 		$key= base64_decode($encodingAesKey . "=");
