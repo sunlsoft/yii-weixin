@@ -74,6 +74,12 @@ class wxResponse extends Component{
 	public $openId = '';
 	
 	/**
+	 * 开发者微信号
+	 * @var string
+	 */
+	public $ToUserName = '';
+	
+	/**
 	 * 加密模式
 	 * @var unknown
 	 */
@@ -154,7 +160,7 @@ class wxResponse extends Component{
 	
 	private function getResponseObjce($type){
 		$arr['class'] = $this->_message_type_class[$type]['class'];
-		$arr['FromUserName'] = $this->appid;
+		$arr['FromUserName'] = $this->ToUserName;
 		$arr['EncodingType'] = $this->EncodingType;
 		$arr['EncodingAESKey'] = $this->EncodingAESKey;
 		$arr['Token'] = $this->Token;

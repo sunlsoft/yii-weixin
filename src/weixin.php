@@ -78,6 +78,13 @@ class weixin extends Component{
 	 */
 	public $openId = '';
 	
+	
+	/**
+	 * 开发者微信号
+	 * @var string
+	 */
+	public $ToUserName = '';
+	
 	/**
 	 * 消息类型
 	 * @var string
@@ -124,6 +131,7 @@ class weixin extends Component{
 		}else {
 			$this->message_txt_arr = wxDataFormat::xmltoarray($this->getMesssageAesTxt());
 		}
+		$this->ToUserName = isset($this->message_txt_arr['ToUserName']) ? $this->message_txt_arr['ToUserName'] : '';
 		$this->openId = isset($this->message_txt_arr['FromUserName']) ? $this->message_txt_arr['FromUserName'] : '';
 		$this->MsgType = isset($this->message_txt_arr['MsgType']) ? $this->message_txt_arr['MsgType'] : '';
 		$this->Event = isset($this->message_txt_arr['Event']) ? $this->message_txt_arr['Event'] : '';
@@ -178,6 +186,7 @@ class weixin extends Component{
 			$arr['EncodingAESKey'] = $this->EncodingAESKey;
 			$arr['EncodingType'] = $this->EncodingType;
 			$arr['openId'] = $this->openId;
+			$arr['ToUserName'] = $this->ToUserName;
 			$this->_response= \Yii::createObject($arr);
 		}
 		
