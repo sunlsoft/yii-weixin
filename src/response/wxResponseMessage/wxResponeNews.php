@@ -57,11 +57,15 @@ class wxResponeNews extends wxResponseBaseObjct{
 	}
 	
 	public function attributeLabels(){
-		return [
+		$attributeLabels = parent::attributeLabels();
+		$new = [
 				'ArticleCount' => '图文消息个数，限制为1条以内',
 				'MsgType'=>'消息的类型',
 				'Articles'=>'图文消息信息',
 		];
+		
+		$attributeLabels = array_merge($attributeLabels,$new);
+		return $attributeLabels;
 	}
 	
 

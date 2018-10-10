@@ -30,11 +30,15 @@ class wxResponeImage extends wxResponseBaseObjct{
 		return $parentRules;
 	}
 	
-	public function attributeLabels(){
-		return [
+	public function attributeLabels(){	
+		$attributeLabels = parent::attributeLabels();
+		$new = [
 				'MediaId' => '通过素材管理中的接口上传多媒体文件，得到的id。',
 				'MsgType'=>'消息的类型',
 		];
+		
+		$attributeLabels = array_merge($attributeLabels,$new);
+		return $attributeLabels;
 	}
 	
 }

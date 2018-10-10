@@ -49,6 +49,12 @@ class wxResponseBaseObjct extends Model{
 	 */
 	public $EncodingType = weixin::ENCODING_TXT;
 	
+	/**
+	 * 消息创建时间 （整型）
+	 * @var integer
+	 */
+	public $CreateTime = 0;
+	
 	
 	public function rules(){
 		return [
@@ -64,6 +70,7 @@ class wxResponseBaseObjct extends Model{
 		return [
 				'ToUserName' => '接收方帐号（收到的OpenID）',
 				'FromUserName'=>'开发者微信号',
+				'CreateTime'=>'消息创建时间 （整型）'
 		];
 	}
 	
@@ -74,20 +81,14 @@ class wxResponseBaseObjct extends Model{
 	 */
 	public $MsgType = '';
 	
-	public function getBaseArr(){
-		$arr = [
-				'ToUserName'=>$this->ToUserName,
-				'FromUserName'=>$this->FromUserName,
-				'CreateTime'=>time(),
-		];
-		return $arr;
-	}
 	
 	public function getArr(){
 		if (!$this->validate()){
 			return false;
 		}
-		return $this->getAttributes();
+		$this->CreateTime = time();
+		$attributeLabels = $this->attributeLabels();
+		return $this->getAttributes(array_keys($attributeLabels));
 	}
 	
 	public function getResponseXML(){

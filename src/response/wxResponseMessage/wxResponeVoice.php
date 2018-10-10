@@ -33,10 +33,14 @@ class wxResponeVoice extends wxResponseBaseObjct{
 	}
 	
 	public function attributeLabels(){
-		return [
+		$attributeLabels = parent::attributeLabels();
+		$new =  [
 				'MsgType'=>'消息的类型',
 				'MediaId'=>'通过素材管理中的接口上传多媒体文件，得到的id。',
 		];
+		
+		$attributeLabels = array_merge($attributeLabels,$new);
+		return $attributeLabels;
 	}
 	
 	

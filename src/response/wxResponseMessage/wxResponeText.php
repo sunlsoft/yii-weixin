@@ -31,10 +31,14 @@ class wxResponeText extends wxResponseBaseObjct{
 	}
 	
 	public function attributeLabels(){
-		return [
+		$attributeLabels = parent::attributeLabels();
+		$new = [
 				'MsgType'=>'消息的类型',
 				'Content'=>'回复的消息内容',
 		];
+		
+		$attributeLabels = array_merge($attributeLabels,$new);
+		return $attributeLabels;
 	}
 	
 }

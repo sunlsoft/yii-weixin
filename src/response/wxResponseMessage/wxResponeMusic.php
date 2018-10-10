@@ -60,7 +60,8 @@ class wxResponeMusic extends wxResponseBaseObjct{
 	}
 	
 	public function attributeLabels(){
-		return [
+		$attributeLabels = parent::attributeLabels();
+		$new = [
 				'ThumbMediaId' => '通过素材管理中的接口上传多媒体文件，得到的id。',
 				'MsgType'=>'消息的类型',
 				'Title'=>'音乐标题',
@@ -69,6 +70,9 @@ class wxResponeMusic extends wxResponseBaseObjct{
 				'HQMusicUrl'=>'高质量音乐链接，WIFI环境优先使用该链接播放音乐',
 				'ThumbMediaId'=>'缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id'
 		];
+		
+		$attributeLabels = array_merge($attributeLabels,$new);
+		return $attributeLabels;
 	}
 	
 	

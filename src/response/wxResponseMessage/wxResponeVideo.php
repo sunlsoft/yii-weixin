@@ -44,10 +44,16 @@ class wxResponeVideo extends wxResponseBaseObjct{
 	}
 	
 	public function attributeLabels(){
-		return [
+		$attributeLabels = parent::attributeLabels();
+		$new =  [
 				'MsgType'=>'消息的类型',
-				'Content'=>'回复的消息内容',
+				'MediaId'=>'通过素材管理中的接口上传多媒体文件，得到的id。',
+				'Title'=>"视频消息的标题",
+				'Description'=>"视频消息的描述"
 		];
+		
+		$attributeLabels = array_merge($attributeLabels,$new);
+		return $attributeLabels;
 	}
 	
 }
