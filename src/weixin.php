@@ -97,6 +97,18 @@ class weixin extends Component{
 	 */
 	public $Event = FALSE;
 	
+	/**
+	 * 接受微信信息时候的签名
+	 * @var string
+	 */
+	public $RequestMsgSignature = '';
+	
+	/**
+	 * 接受微信数据时候的时间戳
+	 * @var integer
+	 */
+	public $requestTimeStamp = 0;
+	
 	
 	
 	/**
@@ -122,9 +134,9 @@ class weixin extends Component{
 		if ($this->EncodingType == weixin::ENCODING_AES){
 			$WxSecurity = new WxSecurity();
 			$wxArr = wxDataFormat::xmltoarray($this->getMesssageAesTxt());
-			$msgSignature = isset($wxArr['MsgSignature']) ? $wxArr['MsgSignature'] : '';
+			$msgSignature = $this->getRequestMsgSignature();
 			$encrypt = isset($wxArr['Encrypt']) ? $wxArr['Encrypt'] : '';
-			$TimeStamp = isset($wxArr['TimeStamp']) ? $wxArr['TimeStamp'] : '';
+			$TimeStamp = $this->getRequestTimeStamp();
 			$nonce = $this->getRequestNonce();
 			list($resBool, $this->message_txt_arr) = $WxSecurity->decryptMsg( $this->Token,$this->EncodingAESKey, $msgSignature, $TimeStamp,$nonce, $encrypt);
 			$this->message_txt_arr = $resBool ?  wxDataFormat::xmltoarray($this->message_txt_arr ) : [];
@@ -160,6 +172,28 @@ class weixin extends Component{
 			$this->requestNonce = \Yii::$app->request->get('nonce');
 		}
 		return $this->requestNonce;
+	}
+	
+	public function getRequestMsgSignature(){
+		if (!$this->RequestMsgSignature){
+			$this->RequestMsgSignature = \Yii::$app->request->get('msg_signature','');
+		}
+		return $this->RequestMsgSignature;
+	}
+	
+	public function setRequestMsgSignature($RequestMsgSignature){
+		$this->RequestMsgSignature = $RequestMsgSignature;
+	}
+	
+	public function getRequestTimeStamp(){
+		if (!$this->requestTimeStamp){
+			$this->requestTimeStamp = \Yii::$app->request->get('timestamp',0);
+		}
+		return $this->requestTimeStamp;
+	}
+	
+	public function setRequestTimeStamp($requestTimeStamp){
+		$this->requestTimeStamp = $requestTimeStamp;
 	}
 	
 	

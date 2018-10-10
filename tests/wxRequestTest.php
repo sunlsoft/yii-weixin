@@ -50,6 +50,8 @@ class wxRequestTest extends TestCase{
 		$arr = wxDataFormat::xmltoarray($txt);
 		$wxObjcet->setMessageAesTxt($txt);
 		$wxObjcet->setRequestNonce($arr['Nonce']);
+		$wxObjcet->setRequestMsgSignature($arr['MsgSignature']);
+		$wxObjcet->setRequestTimeStamp($arr['TimeStamp']);
 		$wxObjcet->getRequest();
 		
 		
